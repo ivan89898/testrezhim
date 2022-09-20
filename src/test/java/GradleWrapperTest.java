@@ -1,4 +1,5 @@
 import com.codeborne.selenide.Condition;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,8 @@ import static com.codeborne.selenide.Selenide.open;
 
 
 class GradleWrapperTest {
-    {
+    @BeforeEach
+    void setup() {
         open("http://localhost:9999");
     }
 
@@ -52,6 +54,16 @@ class GradleWrapperTest {
         $("[data-test-id=password] input").setValue(wrongPassword);
         $("button.button").click();
         $("[data-test-id=error-notification]").shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль")).shouldBe(Condition.visible);
+    }
+
+    @Test
+    @DisplayName("Should get error message if login with blocked status")
+    void shouldGetErrorIfBlocked() {
+        var registeredUser = DataGenerator.getRegisteredUser("blocked");
+        $("[data-test-id=login] input").setValue(registeredUser.getLogin());
+        $("[data-test-id=password] input").setValue(registeredUser.getPassword());
+        $("button.button").click();
+        $("[data-test-id=error-notification]").shouldHave(Condition.text("Ошибка! Пользователь заблокирован")).shouldBe(Condition.visible);
     }
 
 }
