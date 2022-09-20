@@ -26,14 +26,14 @@ public class DataGenerator {
 
         given()
                 .spec(requestSpec)
-                .body(new RegistrationDto("vasya", "activ", "password"))
+                .body(user)
                 .when()
                 .post("/api/system/users")
                 .then()
                 .statusCode(200);
     }
 
-    private static String getRandomLogin() {
+    public static String getRandomLogin() {
         String login = faker.name().username();
         return login;
     }
@@ -47,10 +47,12 @@ public class DataGenerator {
         private Registration() {
         }
     }
+
     public static RegistrationDto getUser(String status) {
         RegistrationDto user = new RegistrationDto(getRandomLogin(), getRandomPassword(), status);
         return user;
     }
+
     public static RegistrationDto getRegisteredUser(String status) {
         var registeredUser = getUser(status);
         sendRequest(registeredUser);
@@ -60,7 +62,8 @@ public class DataGenerator {
     @Value
     public static class RegistrationDto {
         String login;
-        String status;
         String password;
+        String status;
+
     }
 }
